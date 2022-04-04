@@ -6,7 +6,7 @@ const APIResponse = require('../../helpers/APIResponse');
 const router = express.Router(); // eslint-disable-line new-cap
 const userBloked = require('../../middleware/middleware');
 const { mediaUploadS3 } = require('../s3-multer');
-router.route("/create").post(userBloked, mediaUploadS3.single('image'), Validate, cvCtrl.create);
+router.route("/create").post(userBloked, mediaUploadS3.array('image'), Validate, cvCtrl.create);
 // router.route("/getAllRecipeByCook").get(userBloked, recipeCtrl.getAllRecipeByCook);
 // router.route("/getRecipeByLimit").get(recipeCtrl.getRecipeByLimit);
 router.route("/getAll").get(userBloked, cvCtrl.getAll);
