@@ -7,7 +7,7 @@ const httpStatus = require("http-status");
 const request = require("request");
 const fs = require("fs");
 const JWTHelper = require("../../helpers/jwt.helper");
-const emailHelper = require("../../helpers/emails/emails.helper");
+const sendMail = require("../../helpers/sendMail");
 // const { celebrate, Joi: BaseJoi } = require("celebrate");
 // const Joi = require('joi');
 
@@ -191,14 +191,14 @@ async function forgatePassword(req, res, next) {
       const mailData = {
         PASSWORD: Password,
       };
-      await emailHelper.sendMail(
+      sendMail(
         req.body.email.trim(),
         "Reset password",
         "user/admin-sendpassword.html",
         mailData
       );
       user.password = Utils.encrypt(Password);
-      await Admin.save();
+      await user.save();
       return res
         .status(httpStatus.OK)
         .json(

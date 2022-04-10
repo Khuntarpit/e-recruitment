@@ -8,7 +8,8 @@ const httpStatus = require("http-status");
 const request = require("request");
 const fs = require("fs");
 const JWTHelper = require("../../helpers/jwt.helper");
-const emailHelper = require("../../helpers/emails/emails.helper");
+const sendMail = require("../../helpers/sendMail");
+// const emailHelper = require("../../helpers/emails/emails.helper");
 // const { celebrate, Joi: BaseJoi } = require("celebrate");
 // const Joi = require('joi');
 
@@ -195,15 +196,8 @@ async function forgatePassword(req, res, next) {
     });
     if (user) {
       let Password = Utils.generateUUID();
-      const mailData = {
-        PASSWORD: Password,
-      };
-      await emailHelper.sendMail(
-        req.body.email.trim(),
-        "Reset password",
-        "user/admin-sendpassword.html",
-        mailData
-      );
+
+      sendMail(req.body.email, "Reset password", Password);
       user.password = Utils.encrypt(Password);
       await user.save();
       return res
@@ -239,7 +233,7 @@ async function getUserByRole(req, res, next) {
 }
 
 async function getQuestion(req, res, next) {
-  console.log(`exam`, req)
+  console.log(`exam`, req);
   try {
     const question = await Question.find();
     res
@@ -275,7 +269,7 @@ async function submitExam(req, res, next) {
       userInfo: req.user,
       exam: updatedArray,
       totalMark,
-      examSubmit: true
+      examSubmit: true,
     });
     res
       .status(httpStatus.OK)
